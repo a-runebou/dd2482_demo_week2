@@ -27,9 +27,11 @@ Demo
 
 Our demo investigates why conventional code coverage is not always sufficient for evaluating the quality of a test suite. We will construct a small application with tests that achieve high or complete statement coverage while still failing to detect meaningful faults.
 
-We will then introduce mutation testing in the workflow, where small artificial faults are automatically introduced into the program and the existing test suite is evaluated based on whether it detects them. Surviving mutations will expose weaknesses in the tests.
+We will then introduce mutation testing in the workflow, where small artificial faults are introduced into the program and the existing test suite is evaluated based on whether it detects them. Surviving mutations will expose weaknesses that are not visible from code coverage alone.
 
-We can then improve the test suite using techniques such as boundary-value testing and property-based testing, and rerun the mutation tests to demonstrate how these approaches can make tests detect faults without necessarily changing the code coverage. We would also mention the downsides of adding mutation testing, such as the added time for running the tests, and how to balance this.
+We can then improve the test suite using techniques such as boundary-value testing and property-based testing, and rerun the mutation tests to demonstrate how these approaches can make tests detect faults without necessarily changing the code coverage. 
+
+The demo will also discuss some trade-offs of mutation testing, such as computational cost, and how to balance stronger test evaluation agains execution time.
 
 The workflow will be integrated into a CI pipeline so that coverage, mutation testing, and the improved tests act as automated validation mechanisms. During the live demo, we will change the workflow to use mutation testing and modify the tests.
 
@@ -38,6 +40,6 @@ The workflow will be integrated into a CI pipeline so that coverage, mutation te
 
 This demo is directly relevant to the topics of testing and verification and continuous integration. Automated tests are a central validation mechanism in CI pipelines, but commonly used metrics such as code coverage only measure if the code was executed and do not necessarily indicate whether the tests can detect incorrect behaviour.
 
-Mutation testing can catch these errors and therefore provides a stronger form of automated verification. Combining mutation testing with boundary-value and property-based testing demonstrates how different testing techniques complement each other. 
+Mutation testing provides a way to evaluate the test suite by checking whether deliberatly introduced changes ar detected by the test suite. Combining this evaluation with boundary-value and property-based testing demonstrates how different testing techniques complement each other. 
 
 
