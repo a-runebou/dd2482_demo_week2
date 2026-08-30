@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/shipping.py
+src/dd2482_week2_demo.egg-info/PKG-INFO
+src/dd2482_week2_demo.egg-info/SOURCES.txt
+src/dd2482_week2_demo.egg-info/dependency_links.txt
+src/dd2482_week2_demo.egg-info/requires.txt
+src/dd2482_week2_demo.egg-info/top_level.txt
+tests/test_properties.py
+tests/test_shipping.py
