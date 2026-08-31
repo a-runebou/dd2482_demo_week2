@@ -1,6 +1,6 @@
 
 
-def letter_shipping_cost(weight_g: int) -> int:
+def postage_price(weight_g: int) -> int:
     """Calculate the shipping cost based on the weight in grams.
     https://www.postnord.se/privat/priser-och-villkor/portotabeller/portotabell-brev/
 
@@ -27,3 +27,4 @@ def letter_shipping_cost(weight_g: int) -> int:
         return 154
     else:
         raise ValueError("Weight exceeds the maximum limit")
+
