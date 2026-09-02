@@ -8,7 +8,7 @@ jobs:
     mutation:
         if: >-
             github.event_name == 'workflow_dispatch' ||
-            contains(github.event.commit.message, '[mutation]')
+            contains(github.event.head_commit.message, '[mutation]')
 
         runs-on: ubuntu-latest
 
