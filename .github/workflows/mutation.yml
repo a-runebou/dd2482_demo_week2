@@ -1,0 +1,32 @@
+name: Mutation testing
+
+on:
+    push:
+    workflow_dispatch:
+
+jobs:
+    mutation:
+        if: >-
+            github.event_name == 'workflow_dispatch' ||
+            contains(github.event.commit.message, '[mutation]')
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: actions/setup-python@v6
+              with:
+                  python-version: '3.12'
+            - name: Install project
+              run: pip install -e ".[dev]"
+
+            - name: Run tests with coverage
+              run: pytest --cov=shipping --cov-report=term-missing --cov-fail-under=100
+
+            - name: Run mutation testing
+              run: mutmut run
+
+            - name: Show mutation testing results
+              if: always()
+              run: mutmut results
