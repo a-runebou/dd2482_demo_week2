@@ -27,6 +27,14 @@ jobs:
             - name: Run mutation testing
               run: mutmut run
 
-            - name: Show mutation testing results
+            - name: Check mutation results
               if: always()
-              run: mutmut results
+              shell: bash
+              run: |
+                mutmut results > mutation_results.txt
+                cat mutation_results.txt
+
+                if grep -Eq 'survived\s*$' mutation_results.txt; then
+                    echo "Some mutations survived"
+                    exit 1
+                fi
