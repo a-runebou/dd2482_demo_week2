@@ -6,4 +6,4 @@ __pycache__/
 htmlcov/
 .mutmut-cache/
 mutants/
-
+*.egg-info/
