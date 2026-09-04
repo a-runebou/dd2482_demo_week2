@@ -3,19 +3,43 @@ name: CI
 on:
     push:
     pull_request:
+    workflow_dispatch:
 
 jobs:
     test:
         runs-on: ubuntu-latest
 
+        env:
+          RUN_MUTATION_TESTS: >-
+            ${{ github.event_name == 'workflow_dispatch' || 
+                (github.event_name == 'push' && 
+                contains(github.event.head_commit.message, '[mutation]')) }}
+        
         steps:
             - uses: actions/checkout@v5
 
             - uses: actions/setup-python@v6
               with:
                   python-version: '3.12'
+              
             - name: Install project
               run: pip install -e ".[dev]"
 
             - name: Run tests with coverage
               run: pytest --cov=shipping --cov-report=term-missing --cov-fail-under=100
+
+            - name: Run mutation testing
+              if: env.RUN_MUTATION_TESTS == 'true'
+              run: mutmut run
+            
+            - name: Check mutation results
+              if: env.RUN_MUTATION_TESTS == 'true'
+              shell: bash
+              run: |
+                mutmut results > mutation_results.txt
+                cat mutation_results.txt
+
+                if grep -Eq 'survived\s*$' mutation_results.txt; then
+                    echo "Some mutations survived"
+                    exit 1
+                fi
