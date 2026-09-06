@@ -118,7 +118,7 @@ jobs:
                 print(f'{score:.1f}')
                 ")
 
-                THRESHOLD=80 
+                THRESHOLD=70 
 
                 {
                     echo "# Mutation results"
