@@ -83,33 +83,33 @@ jobs:
               if: env.RUN_MUTATION_TESTS == 'true'
               shell: bash
               run: |
-                mutmut export-cicd-stats > mutation_stats.json
-                cat mutation_stats.json
+                mutmut export-cicd-stats
+                cat mutants/mutmut-cicd-stats.json
 
                 KILLED=$(python -c "
                 import json
-                with open('mutation_stats.json') as f:
+                with open('mutants/mutmut-cicd-stats.json') as f:
                     data = json.load(f)
                 print(data['killed'])
                 ")
 
                 SURVIVED=$(python -c "
                 import json
-                with open('mutation_stats.json') as f:
+                with open('mutants/mutmut-cicd-stats.json') as f:
                     data = json.load(f)
                 print(data['survived'])
                 ")
 
                 TOTAL=$(python -c "
                 import json
-                with open('mutation_stats.json') as f:
+                with open('mutants/mutmut-cicd-stats.json') as f:
                     data = json.load(f)
                 print(data['total'])
                 ")
 
                 SCORE=$(python -c "
                 import json
-                with open('mutation_stats.json') as f:
+                with open('mutants/mutmut-cicd-stats.json') as f:
                     data = json.load(f)
                 
                 killed = data['killed']
@@ -117,7 +117,7 @@ jobs:
                 score = (killed / total * 100) if total > 0 else 0
                 print(f'{score:.1f}')
                 ")
-                
+
                 THRESHOLD=80 
 
                 {
