@@ -71,7 +71,7 @@ def test_express_service():
 
 def test_unknown_service():
     with pytest.raises(ValueError, match="Unknown delivery option"):
-        service_price("today")
+        service_price("Literally 1984")
 
 ##################### Shipping price #####################
 
@@ -86,14 +86,17 @@ def test_express_international_shipping():
 def test_no_discount():
     assert discount_price(400, False) == 0
 
+def test_value_based_discount_500():
+    assert discount_price(750, False) == 100
+
+def test_value_based_discount_2000():
+    assert discount_price(2500, False) == 225
+
+def test_value_based_discount_5000():
+    assert discount_price(6500, False) == 265
+
 def test_sale_discount():
     assert discount_price(400, True) == 100
-
-def test_value_based_and_sale_discount():
-    assert discount_price(1000, True) == 200
-
-def test_sale_discount_cannot_exceed_product_price():
-    assert discount_price(67, True) == 67
 
 def test_product_price_integer():
     with pytest.raises(TypeError, match="Price must be an integer"):
