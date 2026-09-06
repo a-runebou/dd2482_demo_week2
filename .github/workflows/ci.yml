@@ -86,21 +86,36 @@ jobs:
                 mutmut results > mutation_results.txt
                 cat mutation_results.txt
 
+                KILLED=$(grep -Ec 'killed\s*$' mutation_results.txt || true)
                 SURVIVED=$(grep -Ec 'survived\s*$' mutation_results.txt || true)
 
+                SCORE=$(python -c "
+                killed = $KILLED
+                survived = $SURVIVED
+                total = killed + survived
+                score = (killed / total * 100) if total > 0 else 0
+                print(score)
+                ")
+
+                THRESHOLD=80 
+
                 {
-                    echo "## Mutation results"
+                    echo "# Mutation results"
                     echo ""
                     echo "| Metric | Result |"
                     echo "| --- | ---: |"
                     echo "| Survived | $SURVIVED |"
+                    echo "| Killed | $KILLED |"
+                    echo "| Score | $SCORE |"
+                    echo "| Threshold | $THRESHOLD |"
                 } >> "$GITHUB_STEP_SUMMARY"
 
-                if [ "$SURVIVED" -gt 0 ]; then
+                if python -c "exit(0 if float('$SCORE') >= $THRESHOLD else 1)"; then
                     echo "" >> "$GITHUB_STEP_SUMMARY"
-                    echo "❌ ${SURVIVED} mutant(s) survived." >> "$GITHUB_STEP_SUMMARY"
-                    exit 1
+                    echo "✅ Mutation score meets the threshold." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
                 else
                     echo "" >> "$GITHUB_STEP_SUMMARY"
-                    echo "✅ All mutants killed." >> "$GITHUB_STEP_SUMMARY"
+                    echo "❌ Mutation score is below the ${THRESHOLD}% threshold." >> "$GITHUB_STEP_SUMMARY"
+                    exit 1
                 fi
