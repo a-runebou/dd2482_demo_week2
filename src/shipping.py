@@ -55,7 +55,7 @@ def destination_price(destination: str) -> int:
         case "global":
             return 100
         case _:
-            raise ValueError("Unknown destination")
+            raise ValueError("Invalid destination")
 
 
 def service_price(service: str) -> int:
@@ -66,7 +66,7 @@ def service_price(service: str) -> int:
         case "express":
             return 100
         case _:
-            raise ValueError("Unknown delivery option")
+            raise ValueError("Invalid delivery option")
 
 
 

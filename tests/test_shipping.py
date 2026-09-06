@@ -16,23 +16,15 @@ from shipping import (
 
 ##################### Weight pricing #####################
 
-def test_letter_up_to_50g():
-    assert weight_price(25) == 22
-
-def test_letter_up_to_100g():
-    assert weight_price(75) == 44
-
-def test_letter_up_to_250g():
-    assert weight_price(200) == 66
-
-def test_letter_up_to_500g():
-    assert weight_price(450) == 88
-
-def test_letter_up_to_1000g():
-    assert weight_price(900) == 132
-
-def test_letter_up_to_2000g():
-    assert weight_price(1500) == 154
+@pytest.mark.parametrize("weight, expected",
+    [(25, 22),
+     (75, 44),
+     (200, 66),
+     (450, 88),
+     (900, 132),
+     (1500, 154)])
+def test_weight_price_boundaries(weight, expected):
+    assert weight_price(weight) == expected
 
 def test_weight_integer():
     with pytest.raises(TypeError, match="Weight must be an integer"):
@@ -48,55 +40,48 @@ def test_letter_exceeds_max_weight():
 
 ##################### Destination pricing #####################
 
-def test_domestic_destination():
-    assert destination_price("domestic") == 25
+@pytest.mark.parametrize("destination, expected",
+    [("domestic", 25),
+     ("international", 50),
+     ("global", 100)])
+def test_destination_price_boundaries(destination, expected):
+    assert destination_price(destination) == expected
 
-def test_international_destination():
-    assert destination_price("international") == 50
-
-def test_global_destination():
-    assert destination_price("global") == 100
-
-def test_unknown_destination():
-    with pytest.raises(ValueError, match="Unknown destination"):
+def test_invalid_destination():
+    with pytest.raises(ValueError, match="Invalid destination"):
         destination_price("bottom of the mariana trench")
 
 ##################### Service pricing #####################
 
-def test_standard_service():
-    assert service_price("standard") == 0
+@pytest.mark.parametrize("service, expected",
+    [("standard", 0),
+     ("express", 100)])
+def test_service_price_boundaries(service, expected):
+    assert service_price(service) == expected
 
-def test_express_service():
-    assert service_price("express") == 100
-
-def test_unknown_service():
-    with pytest.raises(ValueError, match="Unknown delivery option"):
+def test_invalid_service():
+    with pytest.raises(ValueError, match="Invalid delivery option"):
         service_price("Literally 1984")
 
 ##################### Shipping price #####################
 
-def test_standard_domestic_shipping():
-    assert shipping_price(25, "domestic", "standard") == 47
-
-def test_express_international_shipping():
-    assert shipping_price(75, "international", "express") == 194
+@pytest.mark.parametrize("weight, destination, service, expected",
+    [(25, "domestic", "standard", 47),
+     (75, "international", "express", 194)])
+def test_shipping_price_combinations(weight, destination, service, expected):
+    assert shipping_price(weight, destination, service) == expected
 
 ##################### Discount price #####################
 
-def test_no_discount():
-    assert discount_price(400, False) == 0
-
-def test_value_based_discount_500():
-    assert discount_price(750, False) == 100
-
-def test_value_based_discount_2000():
-    assert discount_price(2500, False) == 225
-
-def test_value_based_discount_5000():
-    assert discount_price(6500, False) == 265
-
-def test_sale_discount():
-    assert discount_price(400, True) == 100
+@pytest.mark.parametrize(
+    "price, sale, expected",
+    [(400, False, 0),
+     (750, False, 100),
+     (2500, False, 225),
+     (6500, False, 265),
+     (400, True, 100)])
+def test_discount_price_boundaries(price, sale, expected):
+    assert discount_price(price, sale) == expected
 
 def test_product_price_integer():
     with pytest.raises(TypeError, match="Price must be an integer"):
@@ -112,13 +97,7 @@ def test_sale_boolean():
 
 ##################### Total package cost #####################
 
-def test_total_cost_minimal():
-    package = Package(
-        product_price = 1,
-        weight = 1,
-        destination = "domestic",
-        service = "standard",
-        sale = False,
-    )
-
-    assert calculate_total_cost(package) == 48
+@pytest.mark.parametrize("package, expected",
+    [(Package(1, 1, "domestic", "standard", False), 48)])
+def test_calculate_total_cost(package, expected):
+    assert calculate_total_cost(package) == expected
