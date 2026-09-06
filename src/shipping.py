@@ -90,9 +90,16 @@ def discount_price(product_price: int, sale: bool) -> int:
 
     discount_price = 0
 
-    if product_price >= 500:                            # Value-based discount
-        discount_price += (product_price * 10 // 100)
-    if sale:                                            # Promotional discount
+    # Value-based discount
+    if product_price >= 5000:
+        discount_price += 200 + (product_price * 1 // 100)
+    elif product_price >= 2000:
+        discount_price += 100 + (product_price * 5 // 100)
+    elif product_price >= 500:
+        discount_price += 25 + (product_price * 10 // 100)
+
+    # Promotional discount
+    if sale:
         discount_price += min(100, product_price)
     return discount_price
 
