@@ -24,6 +24,7 @@ from shipping import (
      (900, 132),
      (1500, 154)])
 
+
 def test_weight_price_boundaries(weight, expected):
     assert weight_price(weight) == expected
 
