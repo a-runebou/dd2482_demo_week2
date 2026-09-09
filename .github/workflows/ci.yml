@@ -77,13 +77,19 @@ jobs:
 
             - name: Run mutation testing
               if: env.RUN_MUTATION_TESTS == 'true'
+              continue-on-error: true
               run: mutmut run
 
             - name: Check mutation results
-              if: env.RUN_MUTATION_TESTS == 'true'
+              if: always() && env.RUN_MUTATION_TESTS == 'true'
               shell: bash
               run: |
+                echo "=== Mutmut results ==="
+                mutmut results || true
+
                 mutmut export-cicd-stats
+
+                echo "=== Mutation statistics ==="
                 cat mutants/mutmut-cicd-stats.json
 
                 KILLED=$(python -c "
@@ -111,30 +117,30 @@ jobs:
                 import json
                 with open('mutants/mutmut-cicd-stats.json') as f:
                     data = json.load(f)
-                
+
                 killed = data['killed']
                 total = data['total']
                 score = (killed / total * 100) if total > 0 else 0
                 print(f'{score:.1f}')
                 ")
 
-                THRESHOLD=80 
+                THRESHOLD=80
 
                 {
                     echo "# Mutation results"
                     echo ""
                     echo "| Metric | Result |"
                     echo "| --- | ---: |"
+                    echo "| Total | $TOTAL |"
                     echo "| Survived | $SURVIVED |"
                     echo "| Killed | $KILLED |"
-                    echo "| Score | $SCORE |"
-                    echo "| Threshold | $THRESHOLD |"
+                    echo "| Score | ${SCORE}% |"
+                    echo "| Threshold | ${THRESHOLD}% |"
                 } >> "$GITHUB_STEP_SUMMARY"
 
                 if python -c "exit(0 if float('$SCORE') >= $THRESHOLD else 1)"; then
                     echo "" >> "$GITHUB_STEP_SUMMARY"
                     echo "✅ Mutation score meets the threshold." >> "$GITHUB_STEP_SUMMARY"
-                    exit 0
                 else
                     echo "" >> "$GITHUB_STEP_SUMMARY"
                     echo "❌ Mutation score is below the ${THRESHOLD}% threshold." >> "$GITHUB_STEP_SUMMARY"
