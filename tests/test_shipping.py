@@ -16,6 +16,9 @@ from shipping import (
 
 ##################### Weight pricing #####################
 
+# Original: if 25 <= 50
+# Mutation: if 25 < 50
+
 @pytest.mark.parametrize("weight, expected",
     [
         (25, 22),
