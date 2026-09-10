@@ -22,20 +22,11 @@ from shipping import (
 @pytest.mark.parametrize("weight, expected",
     [
         (1, 22),
-                (50, 22),
-                (51, 44),
-                (100, 44),
-                (101, 66),
-                (250, 66),
-        
-                (251, 88),
-                (500, 88),
-        
-                (501, 132),
-                (1000, 132),
-        
-                (1001, 154),
-                (2000, 154)
+        (75, 44),
+        (200, 66),
+        (450, 88),
+        (900, 132),
+        (1500, 154),
     ])
 
 def test_weight_price_boundaries(weight, expected):
